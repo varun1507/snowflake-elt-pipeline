@@ -8,7 +8,7 @@ Design an ELT pipeline using Snowflake to process raw transactional data into cu
 
 ## 🧩 Business Use Case
 
-This project simulates an e-commerce system where order data is processed to generate customer-level sales insights.
+This project simulates an e-commerce system where order data is processed to generate customer-level sales insights for reporting and analytics.
 
 ---
 
@@ -16,39 +16,60 @@ This project simulates an e-commerce system where order data is processed to gen
 
 Raw Layer (Snowflake Table)
 → Transformation Layer (SQL)
-→ Curated Layer (Aggregated Table)
+→ Aggregation Layer
+→ Curated Layer
+→ Output for Analytics
 
 ---
 
 ## 🛠️ Tech Stack
 
-* Snowflake
-* SQL
-* Snowpark (conceptual)
+* Snowflake (Cloud Data Warehouse)
+* SQL (Transformation Logic)
 
 ---
 
 ## 📥 Data Sources
 
-* `orders.csv` → Raw transactional data
+* `orders.csv` → Contains transactional order data
 
 ---
 
 ## 🔄 Pipeline Flow
 
-1. Load raw data into Snowflake table
-2. Perform transformation using SQL
-3. Aggregate sales per customer
-4. Store results in curated table
+1. Load raw data into Snowflake table (`raw_orders`)
+2. Apply transformation logic using SQL
+3. Aggregate total sales per customer
+4. Store results in curated table (`customer_sales`)
+5. Perform incremental updates using MERGE
+
+---
+
+## 🔄 Incremental Processing
+
+This pipeline supports incremental data processing by filtering recent records based on `order_date`.
+
+Only new or updated data is processed instead of reprocessing the entire dataset.
+
+The Snowflake `MERGE` operation is used to perform upsert logic into the curated table.
+
+---
+
+## ⚡ Optimization Techniques
+
+* Incremental load using date-based filtering
+* MERGE for efficient upsert operations
+* Clustering on `order_date` for improved query performance
 
 ---
 
 ## ⚡ Key Highlights
 
-* Implemented ELT pipeline in Snowflake
+* Implemented ELT pipeline using Snowflake
 * Designed raw and curated data layers
-* Used SQL for scalable transformation
 * Built aggregation logic for analytics
+* Implemented incremental processing using MERGE
+* Applied performance optimization techniques
 
 ---
 
@@ -56,6 +77,18 @@ Raw Layer (Snowflake Table)
 
 * `data/` → Input dataset
 * `sql/` → SQL scripts for pipeline
+
+---
+
+## 🧪 SQL Transformation Logic
+
+```sql
+SELECT 
+    customer_id,
+    SUM(amount) AS total_amount
+FROM raw_orders
+GROUP BY customer_id;
+```
 
 ---
 
@@ -71,12 +104,32 @@ Raw Layer (Snowflake Table)
 
 ## ▶️ How to Run
 
-1. Create tables using `01_create_tables.sql`
-2. Load data using `02_load_data.sql`
-3. Run transformation using `03_transform.sql`
+1. Create tables using:
+
+   ```sql
+   01_create_tables.sql
+   ```
+
+2. Load data using:
+
+   ```sql
+   02_load_data.sql
+   ```
+
+3. Run transformation:
+
+   ```sql
+   03_transform.sql
+   ```
+
+4. Run incremental load:
+
+   ```sql
+   04_incremental_load.sql
+   ```
 
 ---
 
 ## 🚀 Impact
 
-Demonstrates building scalable ELT pipelines using Snowflake for transforming raw data into analytical insights.
+Demonstrates building scalable ELT pipelines in Snowflake with incremental processing, data modeling, and performance optimization aligned with real-world data engineering practices.

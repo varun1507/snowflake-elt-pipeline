@@ -12,3 +12,6 @@ CREATE OR REPLACE TABLE customer_sales (
     total_amount FLOAT,
     last_updated TIMESTAMP
 );
+
+-- Optional clustering (performance optimization)
+ALTER TABLE raw_orders CLUSTER BY (order_date);

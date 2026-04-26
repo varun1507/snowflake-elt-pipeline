@@ -6,8 +6,9 @@ CREATE OR REPLACE TABLE raw_orders (
     order_date DATE
 );
 
--- Create curated table
+-- Curated table with incremental support
 CREATE OR REPLACE TABLE customer_sales (
     customer_id INT,
-    total_amount FLOAT
+    total_amount FLOAT,
+    last_updated TIMESTAMP
 );
